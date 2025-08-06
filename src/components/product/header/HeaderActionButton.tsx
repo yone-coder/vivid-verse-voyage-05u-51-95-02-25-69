@@ -1,6 +1,6 @@
-
 import React from "react";
 import { LucideIcon } from "lucide-react";
+import { HEADER_ICON_SIZE, HEADER_ICON_STROKE_WIDTH } from "./constants"; // Add this
 
 interface HeaderActionButtonProps {
   Icon: LucideIcon;
@@ -30,22 +30,20 @@ const HeaderActionButton = ({
       }}>
       <button
         onClick={onClick}
-        className="h-7 w-7 rounded-full flex items-center justify-center transition-all duration-700"
-        style={{
-          backgroundColor: 'transparent',
-          transform
-        }}
+        className="h-8 w-8 rounded-full flex items-center justify-center p-1 transition-all duration-700"
       >
         <Icon
+          size={HEADER_ICON_SIZE} // Changed to constant
+          strokeWidth={HEADER_ICON_STROKE_WIDTH} // Changed to constant
           className="transition-all duration-700"
           style={{
             fill: active && fillWhenActive ? activeColor : 'transparent',
-            color: active ? activeColor : progress > 0.5 ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
+            color: active ? activeColor : progress > 0.5 
+              ? `rgba(75, 85, 99, ${0.7 + (progress * 0.3)})` 
+              : `rgba(255, 255, 255, ${0.9 - (progress * 0.3)})`
           }}
-          strokeWidth={1.5}
-          size={18}
         />
-        {badge !== undefined && (
+        {badge && (
           <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[8px] rounded-full h-3 w-3 flex items-center justify-center">
             {badge}
           </span>

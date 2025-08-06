@@ -1,13 +1,18 @@
-// BackButton.tsx
-import { ICON_SIZE, ICON_STROKE_WIDTH } from './constants';
+import React from "react";
+import { ChevronLeft } from "lucide-react";
+import { HEADER_ICON_SIZE, HEADER_ICON_STROKE_WIDTH } from "@/constants/ui"; // Add this
+
+interface BackButtonProps {
+  progress: number;
+}
 
 const BackButton = ({ progress }: BackButtonProps) => (
   <div className="rounded-full transition-all duration-700"
     style={{ backgroundColor: `rgba(0, 0, 0, ${0.1 * (1 - progress)})` }}>
     <button className="h-8 w-8 rounded-full flex items-center justify-center p-1 transition-all duration-700">
       <ChevronLeft
-        size={ICON_SIZE}
-        strokeWidth={ICON_STROKE_WIDTH}
+        size={HEADER_ICON_SIZE} // Changed to constant
+        strokeWidth={HEADER_ICON_STROKE_WIDTH} // Changed to constant
         className="transition-all duration-700"
         style={{
           color: progress > 0.5 
@@ -18,3 +23,5 @@ const BackButton = ({ progress }: BackButtonProps) => (
     </button>
   </div>
 );
+
+export default BackButton;

@@ -1,6 +1,6 @@
 import React from "react";
 import { ChevronLeft } from "lucide-react";
-import { HEADER_ICON_SIZE, HEADER_ICON_STROKE_WIDTH } from "./constants"; // Add this
+import { HEADER_ICON_SIZE, HEADER_ICON_STROKE_WIDTH } from "./constants";
 
 interface BackButtonProps {
   progress: number;

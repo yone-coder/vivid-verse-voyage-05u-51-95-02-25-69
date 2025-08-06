@@ -43,18 +43,25 @@ const ExpandableCard = () => {
 
   if (!product) return null;
 
+  // Currency conversion function
+  const convertToHTG = (usdPrice) => {
+    const exchangeRate = 132; // 1 USD = 132 HTG
+    const price = parseFloat(usdPrice) || 0;
+    return (price * exchangeRate).toFixed(2);
+  };
+
   const title = product.name;
   const description = product.description || "No description available";
   const badge = product.flash_deal ? "FLASH DEAL" : "LIMITED";
   const additionalBadges = product.tags?.filter(tag => tag !== 'flash-deals') || ["CHOICE"];
-  
+
   // Check description length for different behaviors
   const descriptionLines = description.split('\n').length;
   const estimatedLines = Math.ceil(description.length / 60); // Approximate characters per line
   const totalLines = Math.max(descriptionLines, estimatedLines);
   const isExpandableDescription = totalLines >= 3 && totalLines <= 5;
   const isVeryLongDescription = totalLines > 5;
-  
+
   const handleShowMore = () => {
     navigate(`/product/${paramId}/description`);
   };
@@ -91,7 +98,7 @@ const ExpandableCard = () => {
               {isDescriptionExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
             </button>
           )}
-          
+
           {isVeryLongDescription && (
             <button
               onClick={handleShowMore}
@@ -101,13 +108,13 @@ const ExpandableCard = () => {
             </button>
           )}
 
-          {/* Price Display */}
+          {/* Price Display - Now in HTG */}
           <div className="flex items-center space-x-2 ml-auto">
             <span className="text-orange-500 text-lg font-black">
-              US ${product?.discount_price || product?.price || 104.99}
+              HTG {convertToHTG(product?.discount_price || product?.price || 104.99)}
             </span>
             <span className="text-gray-400 text-sm line-through">
-              US ${product?.price || 149.99}
+              HTG {convertToHTG(product?.price || 149.99)}
             </span>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Star, Shield, Users, Store } from "lucide-react";
+import { Star, Check, Users, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface SellerInfoProps {
@@ -83,15 +83,14 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-medium text-gray-900 truncate">{seller.name}</h3>
             {seller.verified && (
-              <Badge variant="secondary" className="flex items-center gap-1">
-                <Shield className="w-3 h-3" />
-                Verified
+              <Badge variant="secondary" className="p-1">
+                <Check className="w-3 h-3" />
               </Badge>
             )}
           </div>
 
           {/* Stats Row */}
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
             {/* Rating */}
             {seller.rating && (
               <div className="flex items-center gap-1">
@@ -111,21 +110,6 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
               <span>{formatNumber(seller.followers_count)}</span>
             </div>
           </div>
-
-          {/* Trust Score */}
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-sm text-gray-600">Trust Score:</span>
-            <span className={`text-sm font-medium ${trustInfo.color}`}>
-              {seller.trust_score}% - {trustInfo.level}
-            </span>
-          </div>
-
-          {/* Description */}
-          {seller.description && (
-            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-              {seller.description}
-            </p>
-          )}
 
           {/* Action Buttons */}
           <div className="flex gap-2">

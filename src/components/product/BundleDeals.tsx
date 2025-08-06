@@ -87,11 +87,10 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
           />
         )}
 
-        {/* Bundle Cards - matching color variants layout exactly */}
+        {/* Bundle Cards - clean minimal design */}
         <div className="grid grid-cols-3 gap-2 mb-3">
           {visibleTiers.map((tier, index) => {
             const isSelected = getCurrentTier() === tier;
-            const isPopular = tier.discount === 20; // Mark the 25 quantity tier as popular
 
             return (
               <div
@@ -103,22 +102,6 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
                   cursor-pointer transform transition-transform duration-150 ease-in-out hover:bg-red-50/10`}
                 onClick={() => onQuantitySelect?.(tier.quantity)}
               >
-                {/* Discount badge - top left */}
-                {tier.discount > 0 && (
-                  <div className="absolute top-1 left-1 bg-red-500 text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center z-10">
-                    <span className="text-[9px] font-medium px-1">
-                      -{tier.discount}%
-                    </span>
-                  </div>
-                )}
-
-                {/* Popular badge */}
-                {isPopular && (
-                  <span className="absolute top-1 left-1 bg-amber-500 text-white text-[10px] px-1.5 py-0.5 rounded z-10">
-                    POPULAR
-                  </span>
-                )}
-
                 {/* Selection checkmark */}
                 {isSelected && (
                   <div className="absolute top-1 right-1 w-5 h-5 bg-[#FF4747] rounded-full flex items-center justify-center shadow-md z-20">
@@ -132,30 +115,22 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
                   </div>
                 )}
 
-                {/* Quantity Display Area (instead of image) */}
-                <div className="relative aspect-square w-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-md overflow-hidden flex items-center justify-center">
-                  {/* Large quantity number */}
-                  <div className="text-3xl font-bold text-gray-700">
-                    {tier.quantity}
+                {/* Clean minimal card content */}
+                <div className="p-3 flex items-center justify-between h-20">
+                  {/* Left side - quantity */}
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-2xl font-bold text-gray-900">{tier.quantity}</span>
+                    <span className="text-sm text-gray-500">pcs</span>
                   </div>
                   
-                  {/* Small "pcs" label */}
-                  <div className="absolute bottom-2 right-2 text-xs text-gray-500 font-medium">
-                    pcs
-                  </div>
-                  
-                  {/* Price label on bottom center - matching color variants */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-center py-1">
-                    <div className="text-xs font-semibold">
-                      {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG` : `$${tier.price.toFixed(2)}`} each
+                  {/* Right side - total price */}
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-gray-900">
+                      {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()}` : `$${(tier.price * tier.quantity).toFixed(0)}`}
                     </div>
-                  </div>
-                </div>
-                
-                {/* Total price below (replacing variant name) */}
-                <div className="p-2 text-center">
-                  <div className="text-xs text-gray-600">
-                    Total: {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()} HTG` : `$${(tier.price * tier.quantity).toFixed(2)}`}
+                    <div className="text-xs text-gray-500">
+                      {htgTotals[tier.quantity] ? 'HTG' : 'USD'}
+                    </div>
                   </div>
                 </div>
               </div>

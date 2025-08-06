@@ -87,81 +87,78 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
           />
         )}
 
-        {/* Bundle Cards */}
+        {/* Bundle Cards - matching color variants layout exactly */}
         <div className="grid grid-cols-3 gap-2 mb-3">
           {visibleTiers.map((tier, index) => {
             const isSelected = getCurrentTier() === tier;
             const isPopular = tier.discount === 20; // Mark the 25 quantity tier as popular
 
             return (
-              <TooltipProvider key={index}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button 
-                      className={cn(
-                        "relative flex flex-col items-center p-2 rounded-md transition-all duration-200",
-                        isSelected 
-                          ? 'ring-2 ring-blue-500 bg-blue-50' 
-                          : 'hover:bg-gray-100 bg-gray-50 border border-gray-200'
-                      )}
-                      onClick={() => onQuantitySelect?.(tier.quantity)}
-                      aria-label={`Select bundle: ${tier.quantity} pieces`}
-                    >
-                      {/* Quantity Circle */}
-                      <div className="relative w-10 h-10 rounded-full border border-gray-200 mb-1 flex items-center justify-center bg-white">
-                        <span className="text-sm font-bold text-gray-700">
-                          {tier.quantity}
-                        </span>
-                        
-                        {tier.discount > 0 && (
-                          <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full min-w-[16px] h-4 flex items-center justify-center">
-                            <span className="text-[7px] font-medium px-1">
-                              -{tier.discount}%
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Price */}
-                      <span className="text-[10px] text-blue-600 font-medium">
-                        {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG` : `$${tier.price.toFixed(2)}`} each
-                      </span>
-                      
-                      {/* Quantity Label */}
-                      <span className="text-[10px] text-gray-600">
-                        {tier.quantity} pcs
-                      </span>
-                      
-                      {/* Popular Badge */}
-                      {isPopular && (
-                        <Badge 
-                          className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-amber-400 hover:bg-amber-400"
-                        >
-                          POPULAR
-                        </Badge>
-                      )}
-                      
-                      {/* Selection Check */}
-                      {isSelected && (
-                        <Check 
-                          className="absolute top-0 right-0 w-4 h-4 text-blue-500 bg-white rounded-full p-0.5 shadow-sm" 
-                        />
-                      )}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="bottom" className="text-xs p-2">
-                    <p className="font-medium">{tier.quantity} pieces</p>
-                    <p className="text-blue-600">
+              <div
+                key={index}
+                className={`border rounded-lg transition-all relative
+                  ${isSelected
+                    ? "border-[#FF4747] bg-red-50/30 shadow-sm ring-2 ring-[#FF4747]/20"
+                    : "border-gray-200 hover:border-red-200 hover:shadow hover:scale-[1.02]"}
+                  cursor-pointer transform transition-transform duration-150 ease-in-out hover:bg-red-50/10`}
+                onClick={() => onQuantitySelect?.(tier.quantity)}
+              >
+                {/* Discount badge - top left */}
+                {tier.discount > 0 && (
+                  <div className="absolute top-1 left-1 bg-red-500 text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center z-10">
+                    <span className="text-[9px] font-medium px-1">
+                      -{tier.discount}%
+                    </span>
+                  </div>
+                )}
+
+                {/* Popular badge */}
+                {isPopular && (
+                  <span className="absolute top-1 left-1 bg-amber-500 text-white text-[10px] px-1.5 py-0.5 rounded z-10">
+                    POPULAR
+                  </span>
+                )}
+
+                {/* Selection checkmark */}
+                {isSelected && (
+                  <div className="absolute top-1 right-1 w-5 h-5 bg-[#FF4747] rounded-full flex items-center justify-center shadow-md z-20">
+                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                )}
+
+                {/* Quantity Display Area (instead of image) */}
+                <div className="relative aspect-square w-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-md overflow-hidden flex items-center justify-center">
+                  {/* Large quantity number */}
+                  <div className="text-3xl font-bold text-gray-700">
+                    {tier.quantity}
+                  </div>
+                  
+                  {/* Small "pcs" label */}
+                  <div className="absolute bottom-2 right-2 text-xs text-gray-500 font-medium">
+                    pcs
+                  </div>
+                  
+                  {/* Price label on bottom center - matching color variants */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-center py-1">
+                    <div className="text-xs font-semibold">
                       {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG` : `$${tier.price.toFixed(2)}`} each
-                    </p>
-                    <p className="text-green-600">
-                      Total: {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()} HTG` : `$${(tier.price * tier.quantity).toFixed(2)}`}
-                    </p>
-                    {tier.discount > 0 && <p className="text-red-600">{tier.discount}% discount</p>}
-                    {isPopular && <p className="text-amber-600">Most popular choice</p>}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Total price below (replacing variant name) */}
+                <div className="p-2 text-center">
+                  <div className="text-xs text-gray-600">
+                    Total: {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()} HTG` : `$${(tier.price * tier.quantity).toFixed(2)}`}
+                  </div>
+                </div>
+              </div>
             );
           })}
         </div>

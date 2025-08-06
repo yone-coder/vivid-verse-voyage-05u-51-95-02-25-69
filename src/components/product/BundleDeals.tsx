@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Package, Clock } from 'lucide-react';
+import { Package, Clock, Check } from 'lucide-react';
+import { cn } from "@/lib/utils";
+import { 
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 import ProductSectionHeader from './ProductSectionHeader';
 import ToggleExpandButton from "@/components/product/ToggleExpandButton";
 import { convertUsdToHtg } from '@/utils/currencyConverter';
@@ -79,36 +87,81 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
           />
         )}
 
-        {/* Tiers grid */}
-        <div className="grid grid-cols-3 gap-1.5 mb-3">
+        {/* Bundle Cards */}
+        <div className="grid grid-cols-3 gap-2 mb-3">
           {visibleTiers.map((tier, index) => {
-            const quantityLabel = `${tier.quantity}`;
             const isSelected = getCurrentTier() === tier;
+            const isPopular = tier.discount === 20; // Mark the 25 quantity tier as popular
 
             return (
-              <div
-                key={index}
-                onClick={() => onQuantitySelect?.(tier.quantity)}
-                className={`rounded-lg p-2 text-center border transition-all cursor-pointer ${
-                  isSelected
-                    ? 'bg-orange-50 border-orange-300 ring-2 ring-orange-200'
-                    : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
-                }`}
-              >
-                <div className="text-xs font-medium">{quantityLabel} pcs</div>
-                <div className={`font-semibold text-xs ${
-                  isSelected ? 'text-orange-700' : 'text-orange-600'
-                }`}>
-                  {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG each` : `$${tier.price.toFixed(2)} each`}
-                </div>
-                <div className={`text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
-                  isSelected 
-                    ? 'bg-orange-600' 
-                    : 'bg-gradient-to-r from-orange-500 to-red-500'
-                }`}>
-                  {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()} HTG` : `${tier.discount}% Off`}
-                </div>
-              </div>
+              <TooltipProvider key={index}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button 
+                      className={cn(
+                        "relative flex flex-col items-center p-2 rounded-md transition-all duration-200",
+                        isSelected 
+                          ? 'ring-2 ring-blue-500 bg-blue-50' 
+                          : 'hover:bg-gray-100 bg-gray-50 border border-gray-200'
+                      )}
+                      onClick={() => onQuantitySelect?.(tier.quantity)}
+                      aria-label={`Select bundle: ${tier.quantity} pieces`}
+                    >
+                      {/* Quantity Circle */}
+                      <div className="relative w-10 h-10 rounded-full border border-gray-200 mb-1 flex items-center justify-center bg-white">
+                        <span className="text-sm font-bold text-gray-700">
+                          {tier.quantity}
+                        </span>
+                        
+                        {tier.discount > 0 && (
+                          <div className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full min-w-[16px] h-4 flex items-center justify-center">
+                            <span className="text-[7px] font-medium px-1">
+                              -{tier.discount}%
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Price */}
+                      <span className="text-[10px] text-blue-600 font-medium">
+                        {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG` : `$${tier.price.toFixed(2)}`} each
+                      </span>
+                      
+                      {/* Quantity Label */}
+                      <span className="text-[10px] text-gray-600">
+                        {tier.quantity} pcs
+                      </span>
+                      
+                      {/* Popular Badge */}
+                      {isPopular && (
+                        <Badge 
+                          className="absolute -top-1 -left-1 text-[7px] py-0 px-1 bg-amber-400 hover:bg-amber-400"
+                        >
+                          POPULAR
+                        </Badge>
+                      )}
+                      
+                      {/* Selection Check */}
+                      {isSelected && (
+                        <Check 
+                          className="absolute top-0 right-0 w-4 h-4 text-blue-500 bg-white rounded-full p-0.5 shadow-sm" 
+                        />
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom" className="text-xs p-2">
+                    <p className="font-medium">{tier.quantity} pieces</p>
+                    <p className="text-blue-600">
+                      {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG` : `$${tier.price.toFixed(2)}`} each
+                    </p>
+                    <p className="text-green-600">
+                      Total: {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()} HTG` : `$${(tier.price * tier.quantity).toFixed(2)}`}
+                    </p>
+                    {tier.discount > 0 && <p className="text-red-600">{tier.discount}% discount</p>}
+                    {isPopular && <p className="text-amber-600">Most popular choice</p>}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             );
           })}
         </div>

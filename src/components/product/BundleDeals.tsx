@@ -87,24 +87,27 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
           />
         )}
 
-        {/* Bundle Cards - clean minimal design */}
+        {/* Bundle Cards - reduced height */}
         <div className="grid grid-cols-3 gap-2 mb-3">
           {visibleTiers.map((tier, index) => {
             const isSelected = getCurrentTier() === tier;
+            const isPopular = tier.discount === 20; // Mark the 25 quantity tier as popular
 
             return (
               <div
                 key={index}
                 className={`border rounded-lg transition-all relative
                   ${isSelected
-                    ? "border-[#FF4747] bg-red-50/30 shadow-sm ring-2 ring-[#FF4747]/20"
-                    : "border-gray-200 hover:border-red-200 hover:shadow hover:scale-[1.02]"}
+                    ? "border-red-500 bg-red-50 shadow-sm ring-2 ring-red-500/20"
+                    : "border-gray-200 hover:border-red-200 hover:shadow hover:scale-105"}
                   cursor-pointer transform transition-transform duration-150 ease-in-out hover:bg-red-50/10`}
                 onClick={() => onQuantitySelect?.(tier.quantity)}
               >
+
+
                 {/* Selection checkmark */}
                 {isSelected && (
-                  <div className="absolute top-1 right-1 w-5 h-5 bg-[#FF4747] rounded-full flex items-center justify-center shadow-md z-20">
+                  <div className="absolute top-1 right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center shadow-md z-20">
                     <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                       <path
                         fillRule="evenodd"
@@ -115,22 +118,30 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
                   </div>
                 )}
 
-                {/* Clean minimal card content */}
-                <div className="p-3 flex items-center justify-between h-20">
-                  {/* Left side - quantity */}
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-2xl font-bold text-gray-900">{tier.quantity}</span>
-                    <span className="text-sm text-gray-500">pcs</span>
+                {/* Quantity Display Area - reduced height */}
+                <div className="relative h-20 w-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-md overflow-hidden flex items-center justify-center">
+                  {/* Large quantity number */}
+                  <div className="text-2xl font-bold text-gray-700">
+                    {tier.quantity}
                   </div>
-                  
-                  {/* Right side - total price */}
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-gray-900">
-                      {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()}` : `$${(tier.price * tier.quantity).toFixed(0)}`}
+
+                  {/* Small "pcs" label */}
+                  <div className="absolute bottom-1 right-1 text-[10px] text-gray-500 font-medium">
+                    pcs
+                  </div>
+
+                  {/* Price label on bottom center */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-black/70 text-white text-center py-0.5">
+                    <div className="text-[10px] font-semibold">
+                      {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG` : `$${tier.price.toFixed(2)}`} each
                     </div>
-                    <div className="text-xs text-gray-500">
-                      {htgTotals[tier.quantity] ? 'HTG' : 'USD'}
-                    </div>
+                  </div>
+                </div>
+
+                {/* Total price below - reduced padding */}
+                <div className="p-1.5 text-center">
+                  <div className="text-[10px] text-gray-600">
+                    Total: {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()} HTG` : `$${(tier.price * tier.quantity).toFixed(2)}`}
                   </div>
                 </div>
               </div>

@@ -256,35 +256,29 @@ const ProductDetail = () => {
         <ProductImageGallery images={productImages.length > 0 ? productImages : ["/placeholder.svg"]} />
       </div>
 
-      <div className="flex-1 overscroll-none">
-        <div className="bg-white pb-20">
-          
-          <ProductSectionWrapper>
-            <CoreIdentity />
+      <div className="flex-1 overscroll-none pb-[112px]"> {/* Add bottom padding */}
+  <div className="bg-white pb-20">
+    <ProductSectionWrapper>
+      <CoreIdentity />
+    </ProductSectionWrapper>
 
-          </ProductSectionWrapper>
+    <ProductSectionWrapper>
+      <ProductColorVariants />
+    </ProductSectionWrapper>
 
-          <ProductSectionWrapper>
-            <ProductColorVariants />
-          </ProductSectionWrapper>
+    <ProductSectionWrapper>
+      <BundleDeals />
+    </ProductSectionWrapper>
 
-          <ProductSectionWrapper>
-            <BundleDeals />
-          </ProductSectionWrapper>
+    <ProductSectionWrapper>
+      <ShippingOptionsComponent />
+    </ProductSectionWrapper>
 
-          <ProductSectionWrapper>
-            <ShippingOptionsComponent />
-          </ProductSectionWrapper>
-
-          <ProductSectionWrapper>
-            <SellerInfo seller={product?.sellers} />
-          </ProductSectionWrapper>
-
-
-          {/* Reviews section removed - now handled by comments page */}
-
-        </div>
-      </div>
+    <ProductSectionWrapper>
+      <SellerInfo seller={product?.sellers} />
+    </ProductSectionWrapper>
+  </div>
+</div>
 
      {/* Sticky Checkout Button */}
 <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50">

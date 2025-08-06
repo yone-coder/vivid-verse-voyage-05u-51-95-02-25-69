@@ -1,7 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Star, Check, Users, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -9,19 +7,15 @@ interface SellerInfoProps {
   seller?: {
     id: string;
     name: string;
-    description?: string;
     image_url?: string;
     verified: boolean;
     rating?: number;
     total_sales: number;
     followers_count: number;
-    trust_score: number;
   };
 }
 
 const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
-  const navigate = useNavigate();
-
   if (!seller) {
     return null;
   }
@@ -36,15 +30,6 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
     return num.toString();
   };
 
-  const getTrustLevel = (score: number): { level: string; color: string } => {
-    if (score >= 90) return { level: "Excellent", color: "text-green-600" };
-    if (score >= 80) return { level: "Very Good", color: "text-blue-600" };
-    if (score >= 70) return { level: "Good", color: "text-yellow-600" };
-    return { level: "Fair", color: "text-orange-600" };
-  };
-
-  const trustInfo = getTrustLevel(seller.trust_score);
-
   // Get the seller logo URL from Supabase storage 
   const getSellerLogoUrl = (imagePath?: string): string | null => {
     if (!imagePath) return null;
@@ -57,10 +42,6 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
   };
 
   const logoUrl = getSellerLogoUrl(seller.image_url);
-
-  const handleViewStore = () => {
-    navigate(`/seller/${seller.id}`);
-  };
 
   return (
     <div className="bg-white">
@@ -90,7 +71,7 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
           </div>
 
           {/* Stats Row */}
-          <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
+          <div className="flex items-center gap-4 text-sm text-gray-600">
             {/* Rating */}
             {seller.rating && (
               <div className="flex items-center gap-1">
@@ -109,21 +90,6 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
               <Users className="w-4 h-4" />
               <span>{formatNumber(seller.followers_count)}</span>
             </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex-1"
-              onClick={handleViewStore}
-            >
-              View Store
-            </Button>
-            <Button variant="outline" size="sm" className="flex-1">
-              Follow
-            </Button>
           </div>
         </div>
       </div>

@@ -65,6 +65,8 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
 
   const visibleTiers = isExpanded ? PRICE_TIERS : PRICE_TIERS.slice(0, 3);
   const maxDiscount = Math.max(...PRICE_TIERS.map(tier => tier.discount));
+
+
 return (
     <div className={`w-full ${className}`}>
       <div className="text-xs">
@@ -88,12 +90,12 @@ return (
             const isPopular = tier.discount === 20; // Mark the 25 quantity tier as popular
 
             return (
-              <div
+                              <div
                 key={index}
-                className={`border rounded-lg transition-all relative
+                className={`border-2 rounded-lg transition-all relative
                   ${isSelected
                     ? "border-red-500 bg-red-50 shadow-sm ring-2 ring-red-500/20"
-                    : "border-gray-200 hover:border-red-200 hover:shadow hover:scale-105"}
+                    : "border-red-200 hover:border-red-400 hover:shadow hover:scale-105"}
                   cursor-pointer transform transition-transform duration-150 ease-in-out hover:bg-red-50/10`}
                 onClick={() => onQuantitySelect?.(tier.quantity)}
               >
@@ -111,23 +113,23 @@ return (
                   </div>
                 )}
 
-                {/* Quantity Display Area - AliExpress theme colors */}
-                <div className="relative h-20 w-full bg-gradient-to-br from-orange-50 to-orange-100 rounded-md overflow-hidden flex items-center justify-center border border-orange-200">
-                  {/* Unit price label on top center - AliExpress orange */}
-                  <div className="absolute top-0 left-0 right-0 bg-orange-500 text-white text-center py-0.5">
-                    <div className="text-[10px] font-semibold">
+                {/* Quantity Display Area - Clean modern design */}
+                <div className="relative h-20 w-full bg-white rounded-lg overflow-hidden flex items-center justify-center border border-gray-200 shadow-sm">
+                  {/* Unit price label on top center - Clean gray */}
+                  <div className="absolute top-0 left-0 right-0 bg-gray-800 text-white text-center py-1">
+                    <div className="text-[10px] font-medium">
                       {htgPrices[tier.quantity] ? `${Math.round(htgPrices[tier.quantity]).toLocaleString()} HTG` : `$${tier.price.toFixed(2)}`} each
                     </div>
                   </div>
 
-                  {/* Large quantity number - Dark orange */}
-                  <div className="text-2xl font-bold text-orange-800">
+                  {/* Large quantity number - Clean dark */}
+                  <div className="text-2xl font-semibold text-gray-900">
                     {tier.quantity}
                   </div>
 
-                  {/* Total price label on bottom center - Deep red for total */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-red-600 text-white text-center py-0.5">
-                    <div className="text-[10px] font-semibold">
+                  {/* Total price label on bottom center - AliExpress red */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-red-500 text-white text-center py-1">
+                    <div className="text-[10px] font-medium">
                       {htgTotals[tier.quantity] ? `${Math.round(htgTotals[tier.quantity]).toLocaleString()} HTG` : `$${(tier.price * tier.quantity).toFixed(2)}`}
                     </div>
                   </div>

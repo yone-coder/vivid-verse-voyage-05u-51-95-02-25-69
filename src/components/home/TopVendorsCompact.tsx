@@ -119,7 +119,7 @@ const VendorCard = ({ vendor }) => {
 
   return (
     <div className="w-full">
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-gray-200 transition-all duration-300">
+      <div className="bg-white rounded-2xl border border-gray-300 overflow-hidden hover:border-gray-400 transition-all duration-300">
 
         {/* Products Grid */}  
         <div className="px-2 pt-2 pb-1 relative">  
@@ -156,7 +156,7 @@ const VendorCard = ({ vendor }) => {
         </div>
 
         {/* Vendor Info */}
-        <div className="px-2 py-1 border-t border-gray-50">
+        <div className="px-2 py-1">
           <div className="flex items-center gap-2">
 
             {/* Vendor Avatar */}

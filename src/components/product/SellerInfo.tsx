@@ -30,7 +30,6 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
     return num.toString();
   };
 
-  // Get the seller logo URL from Supabase storage 
   const getSellerLogoUrl = (imagePath?: string): string | null => {
     if (!imagePath) return null;
 
@@ -44,10 +43,10 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
   const logoUrl = getSellerLogoUrl(seller.image_url);
 
   return (
-    <div className="bg-white p-3">
-      <div className="flex items-center gap-3">
-        {/* Avatar */}
-        <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+    <div className="bg-white">
+      <div className="flex items-center gap-2">
+        {/* Avatar - made smaller */}
+        <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
           {logoUrl ? (
             <img 
               src={logoUrl} 
@@ -55,19 +54,19 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <Store className="w-4 h-4 text-gray-400" />
+            <Store className="w-3 h-3 text-gray-400" />
           )}
         </div>
 
-        {/* Content */}
-        <div className="flex items-center gap-2">
+        {/* Content - more compact */}
+        <div className="flex items-center gap-1">
           <span className="text-xs text-gray-500">Sold by</span>
-          <h3 className="text-sm font-medium text-gray-900 truncate" style={{ maxWidth: '20ch' }}>
+          <h3 className="text-xs font-medium text-gray-900 truncate" style={{ maxWidth: '20ch' }}>
             {seller.name}
           </h3>
           {seller.verified && (
-            <Badge variant="secondary" className="p-1">
-              <Check className="w-3 h-3" />
+            <Badge variant="secondary" className="h-4 px-1">
+              <Check className="w-2.5 h-2.5" />
             </Badge>
           )}
         </div>
@@ -75,6 +74,5 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
     </div>
   );
 };
-
 
 export default SellerInfo;

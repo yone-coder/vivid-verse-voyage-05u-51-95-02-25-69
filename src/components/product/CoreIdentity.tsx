@@ -66,6 +66,7 @@ const ExpandableCard = () => {
   const totalLines = Math.max(descriptionLines, estimatedLines);
   const isExpandableDescription = description && totalLines >= 3 && totalLines <= 5;
   const isVeryLongDescription = description && totalLines > 5;
+  const showMoreButtonPresent = isExpandableDescription || isVeryLongDescription;
 
   const handleShowMore = () => {
     navigate(`/product/${paramId}/description`);
@@ -95,27 +96,29 @@ const ExpandableCard = () => {
           </p>
 
           <div className="flex items-center justify-between mt-2">
-            {isExpandableDescription && (
-              <button
-                onClick={toggleDescription}
-                className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
-              >
-                {isDescriptionExpanded ? 'Show less' : 'Show more'} 
-                {isDescriptionExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-              </button>
-            )}
+            <div className="flex items-center">
+              {isExpandableDescription && (
+                <button
+                  onClick={toggleDescription}
+                  className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
+                >
+                  {isDescriptionExpanded ? 'Show less' : 'Show more'} 
+                  {isDescriptionExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                </button>
+              )}
 
-            {isVeryLongDescription && (
-              <button
-                onClick={handleShowMore}
-                className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
-              >
-                See more <ChevronRight className="w-3 h-3" />
-              </button>
-            )}
+              {isVeryLongDescription && (
+                <button
+                  onClick={handleShowMore}
+                  className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
+                >
+                  See more <ChevronRight className="w-3 h-3" />
+                </button>
+              )}
+            </div>
 
             {/* Price Display - Now in HTG */}
-            <div className="flex items-center space-x-2 ml-auto">
+            <div className={`flex items-center space-x-2 ${!showMoreButtonPresent ? 'ml-0' : 'ml-auto'}`}>
               <span className="text-orange-500 text-lg font-black">
                 HTG {convertToHTG(product?.discount_price || product?.price || 104.99)}
               </span>

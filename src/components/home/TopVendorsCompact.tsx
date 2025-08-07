@@ -109,6 +109,7 @@ const VerificationBadge = () => (
 // Vendor Card Component
 const VendorCard = ({ vendor }) => {
   const [isFollowing, setIsFollowing] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const navigate = useNavigate();
   const displayProducts = vendor.products.slice(0, 4);
 
@@ -160,11 +161,13 @@ const VendorCard = ({ vendor }) => {
 
             {/* Vendor Avatar */}
             <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden">
-              {vendor.image ? (
+              {vendor.image && !imageError ? (
                 <img   
                   src={vendor.image}   
                   alt={vendor.name}   
                   className="w-full h-full object-cover rounded-full"  
+                  onError={() => setImageError(true)}
+                  loading="lazy"
                 />
               ) : (
                 <DefaultSellerAvatar className="w-6 h-6" />
@@ -252,7 +255,6 @@ const VendorCarousel = () => {
 
   // Transform data
   const vendors = sellers
-    .filter(seller => seller.image_url)
     .map((seller, index) => {
       const sellerProducts = products
         .filter(product => product.seller_id === seller.id)
@@ -269,10 +271,22 @@ const VendorCarousel = () => {
           };
         });
 
+      // Handle different types of image URLs
+      let imageUrl = "";
+      if (seller.image_url) {
+        // If it's already a full URL (like Unsplash), use it directly
+        if (seller.image_url.startsWith('http')) {
+          imageUrl = seller.image_url;
+        } else {
+          // If it's a filename, get it from Supabase storage
+          imageUrl = getSellerLogoUrl(seller.image_url);
+        }
+      }
+
       return {
         id: seller.id,
         name: seller.name,
-        image: getSellerLogoUrl(seller.image_url),
+        image: imageUrl,
         verified: seller.verified,
         rating: seller.rating?.toFixed(1) || "0.0",
         sales: seller.total_sales,

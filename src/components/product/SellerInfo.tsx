@@ -60,33 +60,21 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0 flex items-center justify-between">
-          {/* Name and Stats */}
-          <div className="flex flex-col min-w-0">
-            <span className="text-xs text-gray-500">Sold by</span>
-            <div className="flex items-center gap-2">
-              <h3 className="text-sm font-medium text-gray-900 truncate" style={{ maxWidth: '18ch' }}>
-                {seller.name}
-              </h3>
-              
-              {seller.verified && (
-                <Badge variant="secondary" className="p-1">
-                  <Check className="w-3 h-3" />
-                </Badge>
-              )}
-              
-              {seller.rating && (
-                <div className="flex items-center gap-1 text-xs text-gray-500">
-                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                  <span>{seller.rating.toFixed(1)}</span>
-                </div>
-              )}
-            </div>
-          </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-gray-500">Sold by</span>
+          <h3 className="text-sm font-medium text-gray-900 truncate" style={{ maxWidth: '20ch' }}>
+            {seller.name}
+          </h3>
+          {seller.verified && (
+            <Badge variant="secondary" className="p-1">
+              <Check className="w-3 h-3" />
+            </Badge>
+          )}
         </div>
       </div>
     </div>
   );
 };
+
 
 export default SellerInfo;

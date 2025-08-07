@@ -43,11 +43,16 @@ const ExpandableCard = () => {
 
   if (!product) return null;
 
+  // Format number with thousands separator
+  const formatNumber = (num) => {
+    return parseFloat(num).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+
   // Currency conversion function
   const convertToHTG = (usdPrice) => {
     const exchangeRate = 132; // 1 USD = 132 HTG
     const price = parseFloat(usdPrice) || 0;
-    return (price * exchangeRate).toFixed(2);
+    return formatNumber(price * exchangeRate);
   };
 
   const title = product.name;

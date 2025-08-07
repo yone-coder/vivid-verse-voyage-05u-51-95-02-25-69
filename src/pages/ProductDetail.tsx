@@ -273,9 +273,9 @@ const ProductDetail = () => {
           </ProductSectionWrapper>
 
      {/* Moved SellerInfo here, right below CoreIdentity */}
-          <ProductSectionWrapper>
-            <SellerInfo seller={product?.sellers} />
-          </ProductSectionWrapper>
+          <ProductSectionWrapper className="!py-1"> {/* Reduced padding */}
+  <SellerInfo seller={product?.sellers} />
+</ProductSectionWrapper>
 
 
           <ProductSectionWrapper>

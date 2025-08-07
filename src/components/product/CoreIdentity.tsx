@@ -51,16 +51,16 @@ const ExpandableCard = () => {
   };
 
   const title = product.name;
-  const description = product.description || "No description available";
+  const description = product.description;
   const badge = product.flash_deal ? "FLASH DEAL" : "LIMITED";
   const additionalBadges = product.tags?.filter(tag => tag !== 'flash-deals') || ["CHOICE"];
 
-  // Check description length for different behaviors
-  const descriptionLines = description.split('\n').length;
-  const estimatedLines = Math.ceil(description.length / 60); // Approximate characters per line
+  // Check description length for different behaviors (only if description exists)
+  const descriptionLines = description ? description.split('\n').length : 0;
+  const estimatedLines = description ? Math.ceil(description.length / 60) : 0; // Approximate characters per line
   const totalLines = Math.max(descriptionLines, estimatedLines);
-  const isExpandableDescription = totalLines >= 3 && totalLines <= 5;
-  const isVeryLongDescription = totalLines > 5;
+  const isExpandableDescription = description && totalLines >= 3 && totalLines <= 5;
+  const isVeryLongDescription = description && totalLines > 5;
 
   const handleShowMore = () => {
     navigate(`/product/${paramId}/description`);
@@ -83,42 +83,56 @@ const ExpandableCard = () => {
       </div>
 
       {/* Product Description */}
-      <div className="text-xs text-gray-700 leading-tight">
-        <p className={`m-0 ${(isExpandableDescription && !isDescriptionExpanded) || isVeryLongDescription ? 'line-clamp-2' : ''}`}>
-          {description}
-        </p>
+      {description && (
+        <div className="text-xs text-gray-700 leading-tight">
+          <p className={`m-0 ${(isExpandableDescription && !isDescriptionExpanded) || isVeryLongDescription ? 'line-clamp-2' : ''}`}>
+            {description}
+          </p>
 
-        <div className="flex items-center justify-between mt-2">
-          {isExpandableDescription && (
-            <button
-              onClick={toggleDescription}
-              className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
-            >
-              {isDescriptionExpanded ? 'Show less' : 'Show more'} 
-              {isDescriptionExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-            </button>
-          )}
+          <div className="flex items-center justify-between mt-2">
+            {isExpandableDescription && (
+              <button
+                onClick={toggleDescription}
+                className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
+              >
+                {isDescriptionExpanded ? 'Show less' : 'Show more'} 
+                {isDescriptionExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              </button>
+            )}
 
-          {isVeryLongDescription && (
-            <button
-              onClick={handleShowMore}
-              className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
-            >
-              See more <ChevronRight className="w-3 h-3" />
-            </button>
-          )}
+            {isVeryLongDescription && (
+              <button
+                onClick={handleShowMore}
+                className="text-red-500 hover:text-red-600 font-semibold text-xs inline-flex items-center gap-1 transition-colors duration-200"
+              >
+                See more <ChevronRight className="w-3 h-3" />
+              </button>
+            )}
 
-          {/* Price Display - Now in HTG */}
-          <div className="flex items-center space-x-2 ml-auto">
-            <span className="text-orange-500 text-lg font-black">
-              HTG {convertToHTG(product?.discount_price || product?.price || 104.99)}
-            </span>
-            <span className="text-gray-400 text-sm line-through">
-              HTG {convertToHTG(product?.price || 149.99)}
-            </span>
+            {/* Price Display - Now in HTG */}
+            <div className="flex items-center space-x-2 ml-auto">
+              <span className="text-orange-500 text-lg font-black">
+                HTG {convertToHTG(product?.discount_price || product?.price || 104.99)}
+              </span>
+              <span className="text-gray-400 text-sm line-through">
+                HTG {convertToHTG(product?.price || 149.99)}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Price Display when no description */}
+      {!description && (
+        <div className="flex items-center space-x-2 mt-2">
+          <span className="text-orange-500 text-lg font-black">
+            HTG {convertToHTG(product?.discount_price || product?.price || 104.99)}
+          </span>
+          <span className="text-gray-400 text-sm line-through">
+            HTG {convertToHTG(product?.price || 149.99)}
+          </span>
+        </div>
+      )}
     </div>
   );
 };

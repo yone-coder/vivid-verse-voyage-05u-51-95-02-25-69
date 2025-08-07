@@ -272,6 +272,12 @@ const ProductDetail = () => {
             <CoreIdentity />
           </ProductSectionWrapper>
 
+     {/* Moved SellerInfo here, right below CoreIdentity */}
+          <ProductSectionWrapper>
+            <SellerInfo seller={product?.sellers} />
+          </ProductSectionWrapper>
+
+
           <ProductSectionWrapper>
             <ProductColorVariants />
           </ProductSectionWrapper>

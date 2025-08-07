@@ -1,4 +1,4 @@
-// Updated ProductDetail component - Key changes in BundleDeals section
+// Updated ProductDetail component - Reduced spacing between CoreIdentity and SellerInfo
 import React, { useState, useEffect, useRef } from "react";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useNavigate } from "react-router-dom";
@@ -268,15 +268,15 @@ const ProductDetail = () => {
 
       <div className="flex-1 overscroll-none pb-[112px]"> {/* Add bottom padding */}
         <div className="bg-white pb-20">
-          <ProductSectionWrapper>
+          {/* CoreIdentity with reduced bottom margin */}
+          <ProductSectionWrapper className="!mb-0 !pb-1">
             <CoreIdentity />
           </ProductSectionWrapper>
 
-     {/* Moved SellerInfo here, right below CoreIdentity */}
-          <ProductSectionWrapper className="!py-1"> {/* Reduced padding */}
-  <SellerInfo seller={product?.sellers} />
-</ProductSectionWrapper>
-
+          {/* SellerInfo with no top/bottom padding and margin */}
+          <ProductSectionWrapper className="!py-0 !my-0 !mb-3">
+            <SellerInfo seller={product?.sellers} />
+          </ProductSectionWrapper>
 
           <ProductSectionWrapper>
             <ProductColorVariants />
@@ -295,7 +295,6 @@ const ProductDetail = () => {
             <ShippingOptionsComponent />
           </ProductSectionWrapper>
 
-         
         </div>
       </div>
 

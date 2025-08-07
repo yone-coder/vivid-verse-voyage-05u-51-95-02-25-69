@@ -57,7 +57,7 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
         {/* Tiers grid */}
         <div className="grid grid-cols-3 gap-1.5 mb-3">
           {visibleTiers.map((tier, index) => {
-            const quantityLabel = `${tier.quantity}`;
+            const quantityLabel = tier.range;
             const isSelected = getCurrentTier() === tier;
 
             return (
@@ -70,11 +70,11 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
                     : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
                 }`}
               >
-                <div className="text-xs font-medium">{quantityLabel} pcs</div>
+                <div className="text-xs font-medium">{quantityLabel} unités</div>
                 <div className={`font-semibold text-xs ${
                   isSelected ? 'text-orange-700' : 'text-orange-600'
                 }`}>
-                  ${tier.price.toFixed(2)} each
+                  {tier.price.toFixed(0)} HTG
                 </div>
                 <div className={`text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
                   isSelected 

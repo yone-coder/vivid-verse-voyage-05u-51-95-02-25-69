@@ -500,14 +500,16 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
       <InfoBand />
 
-      <div className="mt-1 w-full">  {/* Removed overflow-x-hidden */}
-  <GalleryThumbnails
-    images={images}
-    currentIndex={currentIndex}
-    onThumbnailClick={handleThumbnailClick}
-    isPlaying={isPlaying}
-  />
-</div>
+      {images.length > 1 && (
+        <div className="mt-1 w-full">
+          <GalleryThumbnails
+            images={images}
+            currentIndex={currentIndex}
+            onThumbnailClick={handleThumbnailClick}
+            isPlaying={isPlaying}
+          />
+        </div>
+      )}
 
       {isFullscreenMode && currentIndex !== 1 && (
         <div 

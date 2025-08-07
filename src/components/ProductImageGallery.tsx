@@ -7,7 +7,7 @@ import {
   CarouselApi,
 } from "@/components/ui/carousel";
 import VideoControls from "@/components/product/VideoControls";
-import GalleryThumbnails from "@/components/product/GalleryThumbnails";
+import { GalleryThumbnails } from "@/components/product/GalleryThumbnails";
 import ImageGalleryControls from "@/components/product/ImageGalleryControls";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useNavigate } from "react-router-dom";

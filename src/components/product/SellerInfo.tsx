@@ -44,9 +44,9 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
   const logoUrl = getSellerLogoUrl(seller.image_url);
 
   return (
-    <div className="bg-white">
+    <div className="bg-white p-3">
       <div className="flex items-center gap-3">
-        {/* Seller Avatar */}
+        {/* Avatar */}
         <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
           {logoUrl ? (
             <img 
@@ -59,29 +59,30 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
           )}
         </div>
 
-        {/* Seller Details - Centered to image */}
-        <div className="flex items-center gap-2 flex-1 min-w-0">
-          <h3 className="text-sm font-medium text-gray-900 truncate" style={{maxWidth: '14ch'}}>
-            {seller.name}
-          </h3>
-          <span className="text-sm text-gray-600 font-normal whitespace-nowrap">
-            (
-            {seller.rating && (
-              <>
-                <Star className="inline w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
-                {seller.rating.toFixed(1)}
-                <span className="mx-1">•</span>
-              </>
-            )}
-            <Users className="inline w-3 h-3 mr-1" />
-            {formatNumber(seller.followers_count)}
-            )
-          </span>
-          {seller.verified && (
-            <Badge variant="secondary" className="p-1">
-              <Check className="w-3 h-3" />
-            </Badge>
-          )}
+        {/* Content */}
+        <div className="flex-1 min-w-0 flex items-center justify-between">
+          {/* Name and Stats */}
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs text-gray-500">Sold by</span>
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-medium text-gray-900 truncate" style={{ maxWidth: '18ch' }}>
+                {seller.name}
+              </h3>
+              
+              {seller.verified && (
+                <Badge variant="secondary" className="p-1">
+                  <Check className="w-3 h-3" />
+                </Badge>
+              )}
+              
+              {seller.rating && (
+                <div className="flex items-center gap-1 text-xs text-gray-500">
+                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  <span>{seller.rating.toFixed(1)}</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

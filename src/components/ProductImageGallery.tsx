@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { 
   Carousel,
@@ -16,6 +17,7 @@ import InfoBand from "@/components/product/InfoBand";
 
 interface ProductImageGalleryProps {
   images: string[];
+  videoIndices?: number[];
 }
 
 interface TouchPosition {
@@ -23,7 +25,10 @@ interface TouchPosition {
   y: number;
 }
 
-const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => {
+const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ 
+  images, 
+  videoIndices = [1]
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<CarouselApi | null>(null);
   const [isRotated, setIsRotated] = useState(0);
@@ -79,7 +84,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       );
       setPreloadedImages(preloaded);
     };
-    
+
     preloadImages();
   }, [images]);
 
@@ -88,7 +93,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       videoRef.current.addEventListener('play', () => {
         setIsPlaying(true);
       });
-      
+
       videoRef.current.addEventListener('pause', () => {
         setIsPlaying(false);
       });
@@ -111,7 +116,6 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     video.addEventListener('loadedmetadata', onLoadedMetadata);
     video.addEventListener('progress', onProgress);
 
-    // Clean up listeners on unmount
     return () => {
       video.removeEventListener('timeupdate', onTimeUpdate);
       video.removeEventListener('loadedmetadata', onLoadedMetadata);
@@ -121,17 +125,17 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const onApiChange = useCallback((api: CarouselApi | null) => {
     if (!api) return;
-    
+
     setApi(api);
     setCurrentIndex(api.selectedScrollSnap());
-    
+
     api.on("select", () => {
       const index = api.selectedScrollSnap();
       setCurrentIndex(index);
       setIsRotated(0);
       setIsFlipped(false);
       setZoomLevel(1);
-      
+
       setViewHistory(prev => [...prev, index]);
     });
   }, []);
@@ -141,18 +145,18 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       const newHistory = [...viewHistory];
       newHistory.pop();
       const lastIndex = newHistory[newHistory.length - 1];
-      
+
       if (api) {
         api.scrollTo(lastIndex);
       }
-      
+
       setViewHistory(newHistory);
     }
   }, [api, viewHistory]);
 
   const applyFilter = useCallback((filter: string) => {
     setImageFilter(filter);
-    
+
     toast({
       title: "Filter Applied",
       description: `Image filter: ${filter}`,
@@ -165,7 +169,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     setIsFlipped(false);
     setZoomLevel(1);
     setImageFilter("none");
-    
+
     toast({
       title: "Image Reset",
       description: "All image modifications have been reset",
@@ -197,7 +201,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleImmersiveView = useCallback(() => {
     setViewMode(prev => prev === "default" ? "immersive" : "default");
-    
+
     toast({
       title: viewMode === "default" ? "Immersive View" : "Default View",
       description: viewMode === "default" ? "Showing image without distractions" : "Showing standard gallery view",
@@ -235,7 +239,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     toast({
       title: "Image downloaded",
       description: `Image ${index + 1} has been downloaded`,
@@ -246,10 +250,10 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
   const copyImageUrl = useCallback((index: number) => {
     const image = images[index];
     navigator.clipboard.writeText(image);
-    
+
     setCopiedIndex(index);
     setTimeout(() => setCopiedIndex(null), 2000);
-    
+
     toast({
       title: "Image URL copied",
       description: "Image URL has been copied to clipboard",
@@ -263,7 +267,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
 
   const toggleFullscreen = useCallback(() => {
     setIsFullscreenMode(prev => !prev);
-    
+
     if (!isFullscreenMode) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -352,7 +356,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         toggleFullscreen();
       }
     };
-    
+
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
   }, [isFullscreenMode, toggleFullscreen]);
@@ -362,9 +366,9 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       const interval = setInterval(() => {
         api.scrollNext();
       }, 3000);
-      
+
       setAutoScrollInterval(interval);
-      
+
       return () => {
         clearInterval(interval);
       };
@@ -372,7 +376,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
       clearInterval(autoScrollInterval);
       setAutoScrollInterval(null);
     }
-    
+
     return () => {
       if (autoScrollInterval) {
         clearInterval(autoScrollInterval);
@@ -409,7 +413,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             {images.map((source, index) => (
               <CarouselItem key={index} className="h-full">
                 <div className="flex h-full w-full items-center justify-center overflow-hidden relative">
-                  {index === 1 ? (
+                  {videoIndices.includes(index) ? (
                     <div className="relative w-full h-full flex items-center justify-center">
                       <video
                         ref={videoRef}
@@ -479,7 +483,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             ))}
           </CarouselContent>
 
-          {currentIndex !== 1 && (
+          {!videoIndices.includes(currentIndex) && (
             <ImageGalleryControls
               currentIndex={currentIndex}
               totalImages={images.length}
@@ -487,8 +491,8 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
               isFlipped={isFlipped}
               autoScrollEnabled={autoScrollEnabled}
               focusMode={focusMode}
-              isPlaying={currentIndex === 1 && isPlaying}
-              showControls={!(focusMode || (currentIndex === 1 && isPlaying))}
+              isPlaying={videoIndices.includes(currentIndex) && isPlaying}
+              showControls={!(focusMode || (videoIndices.includes(currentIndex) && isPlaying))}
               onRotate={handleRotate}
               onFlip={handleFlip}
               onToggleAutoScroll={toggleAutoScroll}
@@ -507,11 +511,12 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
             currentIndex={currentIndex}
             onThumbnailClick={handleThumbnailClick}
             isPlaying={isPlaying}
+            videoIndices={videoIndices}
           />
         </div>
       )}
 
-      {isFullscreenMode && currentIndex !== 1 && (
+      {isFullscreenMode && !videoIndices.includes(currentIndex) && (
         <div 
           ref={fullscreenRef}
           className="fixed inset-0 bg-black z-50 flex items-center justify-center animate-fade-in"
@@ -577,7 +582,7 @@ const ProductImageGallery: React.FC<ProductImageGalleryProps> = ({ images }) => 
         </div>
       )}
 
-      {isFullscreenMode && currentIndex === 1 && (
+      {isFullscreenMode && videoIndices.includes(currentIndex) && (
         <div 
           ref={fullscreenRef}
           className="fixed inset-0 bg-black z-50 flex items-center justify-center animate-fade-in"

@@ -187,13 +187,16 @@ const VendorCard = ({ vendor }) => {
 
               {/* Stats */}
               <div className="flex items-center justify-between text-xs text-gray-500">  
-                <div className="flex items-center text-yellow-500">  
-                  <Star size={10} className="fill-yellow-500" />  
-                  <span className="font-medium ml-0.5 text-gray-600">{vendor.rating}</span>  
-                </div>
-                <div className="flex items-center">  
-                  <Users size={10} className="mr-0.5" />  
-                  {vendor.followers}  
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center text-yellow-500">  
+                    <Star size={10} className="fill-yellow-500" />  
+                    <span className="font-medium ml-0.5 text-gray-600">{vendor.rating}</span>  
+                  </div>
+                  <div className="w-px h-3 bg-gray-300"></div>
+                  <div className="flex items-center">  
+                    <Users size={10} className="mr-0.5" />  
+                    {vendor.followers}  
+                  </div>
                 </div>
               </div>
             </div>

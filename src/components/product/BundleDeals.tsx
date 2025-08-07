@@ -79,15 +79,13 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
                 }`}>
                   {tier.price.toFixed(0)} HTG
                 </div>
-                {tier.discount > 0 && (
-                  <div className={`text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
-                    isSelected 
-                      ? 'bg-orange-600' 
-                      : 'bg-gradient-to-r from-orange-500 to-red-500'
-                  }`}>
-                    {tier.discount}% Off
-                  </div>
-                )}
+                <div className={`text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
+                  isSelected 
+                    ? 'bg-orange-600' 
+                    : 'bg-gradient-to-r from-orange-500 to-red-500'
+                }`}>
+                  {tier.discount}% Off
+                </div>
               </div>
             );
           })}

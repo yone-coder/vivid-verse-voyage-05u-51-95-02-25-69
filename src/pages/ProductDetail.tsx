@@ -1,4 +1,4 @@
-// Updated ProductDetail component
+// Updated ProductDetail component - Key changes in BundleDeals section
 import React, { useState, useEffect, useRef } from "react";
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
 import { useNavigate } from "react-router-dom";
@@ -237,6 +237,16 @@ const ProductDetail = () => {
   const currentPrice = product?.discount_price || product?.price || 0;
   const originalPrice = product?.price || 0;
 
+  // Convert USD to HTG (using the same conversion as in CoreIdentity)
+  const convertToHTG = (usdPrice) => {
+    const exchangeRate = 132; // 1 USD = 132 HTG
+    const price = parseFloat(usdPrice) || 0;
+    return price * exchangeRate;
+  };
+
+  // Get the HTG price for bundle deals
+  const baseHTGPrice = convertToHTG(currentPrice);
+
   const selectedVariant = colorVariants.find((v) => v.name === selectedColor);
   const selectedVariantStockInfo = selectedColor ? variantStockInfo[selectedColor] : undefined;
 
@@ -257,75 +267,80 @@ const ProductDetail = () => {
       </div>
 
       <div className="flex-1 overscroll-none pb-[112px]"> {/* Add bottom padding */}
-  <div className="bg-white pb-20">
-    <ProductSectionWrapper>
-      <CoreIdentity />
-    </ProductSectionWrapper>
+        <div className="bg-white pb-20">
+          <ProductSectionWrapper>
+            <CoreIdentity />
+          </ProductSectionWrapper>
 
-    <ProductSectionWrapper>
-      <ProductColorVariants />
-    </ProductSectionWrapper>
+          <ProductSectionWrapper>
+            <ProductColorVariants />
+          </ProductSectionWrapper>
 
-    <ProductSectionWrapper>
-      <BundleDeals />
-    </ProductSectionWrapper>
+          <ProductSectionWrapper>
+            {/* UPDATED: Pass the actual product price in HTG to BundleDeals */}
+            <BundleDeals 
+              currentQuantity={quantity}
+              onQuantitySelect={setQuantity}
+              basePrice={baseHTGPrice} // Pass the converted HTG price
+            />
+          </ProductSectionWrapper>
 
-    <ProductSectionWrapper>
-      <ShippingOptionsComponent />
-    </ProductSectionWrapper>
+          <ProductSectionWrapper>
+            <ShippingOptionsComponent />
+          </ProductSectionWrapper>
 
-    <ProductSectionWrapper>
-      <SellerInfo seller={product?.sellers} />
-    </ProductSectionWrapper>
-  </div>
-</div>
+          <ProductSectionWrapper>
+            <SellerInfo seller={product?.sellers} />
+          </ProductSectionWrapper>
+        </div>
+      </div>
 
-     {/* Sticky Checkout Button */}
-<div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50">
-  {/* Social Buttons */}
-  <div className="flex justify-center items-center gap-6 px-4 py-3 border-b border-gray-100">
-    <button className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
-      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-        <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
-      </svg>
-      <span className="text-sm font-medium">Like</span>
-    </button>
-    
-    <button 
-      onClick={() => navigate(`/product/${productId}/comments`)}
-      className="flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors"
-    >
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-      </svg>
-      <span className="text-sm font-medium">Comment</span>
-    </button>
-    
-    <button className="flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors">
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-      </svg>
-      <span className="text-sm font-medium">Share</span>
-    </button>
-    
-    <button className="flex items-center gap-2 text-gray-600 hover:text-purple-500 transition-colors">
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-      </svg>
-      <span className="text-sm font-medium">Save</span>
-    </button>
-  </div>
-  
-  {/* Checkout Button */}
-  <div className="px-4 py-3">
-    <Button 
-      onClick={buyNow}
-      className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-full font-medium text-base hover:opacity-90"
-    >
-      Proceed to checkout
-    </Button>
-  </div>
-</div>
+      {/* Sticky Checkout Button */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-gray-200 z-50">
+        {/* Social Buttons */}
+        <div className="flex justify-center items-center gap-6 px-4 py-3 border-b border-gray-100">
+          <button className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
+            </svg>
+            <span className="text-sm font-medium">Like</span>
+          </button>
+
+          <button 
+            onClick={() => navigate(`/product/${productId}/comments`)}
+            className="flex items-center gap-2 text-gray-600 hover:text-blue-500 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span className="text-sm font-medium">Comment</span>
+          </button>
+
+          <button className="flex items-center gap-2 text-gray-600 hover:text-green-500 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+            </svg>
+            <span className="text-sm font-medium">Share</span>
+          </button>
+
+          <button className="flex items-center gap-2 text-gray-600 hover:text-purple-500 transition-colors">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg>
+            <span className="text-sm font-medium">Save</span>
+          </button>
+        </div>
+
+        {/* Checkout Button */}
+        <div className="px-4 py-3">
+          <Button 
+            onClick={buyNow}
+            className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 rounded-full font-medium text-base hover:opacity-90"
+          >
+            Proceed to checkout
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

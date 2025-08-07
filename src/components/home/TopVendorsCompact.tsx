@@ -176,13 +176,10 @@ const VendorCard = ({ vendor }) => {
 
             {/* Vendor Details */}
             <div className="flex-1 min-w-0">
-              {/* Name and Rank */}
-              <div className="flex items-center justify-between mb-0.5">  
-                <div className="flex items-center">
-                  <h3 className="font-medium text-xs truncate mr-1">{vendor.name}</h3>  
-                  {vendor.verified && <VerificationBadge />}
-                </div>
-                <span className="text-xs font-bold text-gray-400">#{vendor.rank}</span>
+              {/* Name and Verification */}
+              <div className="flex items-center mb-0.5">  
+                <h3 className="font-medium text-xs truncate mr-1">{vendor.name}</h3>  
+                {vendor.verified && <VerificationBadge />}
               </div>
 
               {/* Stats */}
@@ -198,6 +195,7 @@ const VendorCard = ({ vendor }) => {
                     {vendor.followers}  
                   </div>
                 </div>
+                <span className="text-xs font-bold text-gray-400">#{vendor.rank}</span>
               </div>
             </div>
           </div>
@@ -216,7 +214,6 @@ const VendorCard = ({ vendor }) => {
             }`}  
             onClick={() => setIsFollowing(!isFollowing)}  
           >  
-            <Plus size={12} className="mr-1" />  
             {isFollowing ? "Following" : "Follow"}  
           </button>  
         </div>

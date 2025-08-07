@@ -17,7 +17,7 @@ const GalleryThumbnails = ({
 }: GalleryThumbnailsProps) => {
   return (
     <div className="flex items-center gap-1.5 px-1.5 pt-1.5 pb-1.5 overflow-x-auto w-full scrollbar-hide">
-      {[...Array(Math.min(7, images.length))].map((_, index) => (
+      {images.slice(0, Math.min(7, images.length)).map((img, index) => (
         <div
           key={index}
           className={cn(
@@ -29,10 +29,11 @@ const GalleryThumbnails = ({
           )}
           onClick={() => onThumbnailClick(index)}
         >
-          {index === 0 ? (
+          {/* Only show video controls on the actual video thumbnail (index 1 in your case) */}
+          {index === 1 ? (
             <div className="relative w-full h-full">
               <img 
-                src={images[0]} 
+                src={images[1]} 
                 alt="Video thumbnail"
                 className="w-full h-full object-cover"
               />
@@ -45,7 +46,7 @@ const GalleryThumbnails = ({
             </div>
           ) : (
             <img 
-              src={images[index]} 
+              src={img} 
               alt={`Thumbnail ${index}`} 
               className="w-full h-full object-cover"
             />

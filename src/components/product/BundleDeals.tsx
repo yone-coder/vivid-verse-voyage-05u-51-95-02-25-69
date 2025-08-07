@@ -3,32 +3,35 @@ import { Package, Clock } from 'lucide-react';
 import ProductSectionHeader from './ProductSectionHeader';
 import ToggleExpandButton from "@/components/product/ToggleExpandButton";
 
-// Price tiers configuration (removed 1 pc tier)
+// Price tiers configuration
 const PRICE_TIERS = [
-  { quantity: 5, price: 9.00, discount: 10 },
-  { quantity: 10, price: 8.50, discount: 15 },
-  { quantity: 25, price: 8.00, discount: 20 },
-  { quantity: 50, price: 7.50, discount: 25 },
-  { quantity: 100, price: 7.00, discount: 30 }
+  { min: 1, max: 2, price: 10.00, discount: 0 },
+  { min: 3, max: 5, price: 9.00, discount: 10 },
+  { min: 6, max: 9, price: 8.50, discount: 15 },
+  { min: 10, max: 49, price: 8.00, discount: 20 },
+  { min: 50, max: 99, price: 7.50, discount: 25 },
+  { min: 100, max: Infinity, price: 7.00, discount: 30 }
 ];
 
 interface BundleDealsProps {
   className?: string;
   currentQuantity?: number;
   onQuantitySelect?: (quantity: number) => void;
+  hideHeader?: boolean;
 }
 
 const BundleDeals: React.FC<BundleDealsProps> = ({ 
   className = "",
   currentQuantity = 1,
-  onQuantitySelect
+  onQuantitySelect,
+  hideHeader = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   // Find which tier the current quantity falls into
   const getCurrentTier = () => {
     return PRICE_TIERS.find(tier => 
-      currentQuantity === tier.quantity
+      currentQuantity >= tier.min && currentQuantity <= tier.max
     );
   };
 
@@ -57,32 +60,34 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
         {/* Tiers grid */}
         <div className="grid grid-cols-3 gap-1.5 mb-3">
           {visibleTiers.map((tier, index) => {
-            const quantityLabel = tier.range;
+            const rangeLabel = tier.max === Infinity ? `${tier.min}+` : `${tier.min}-${tier.max}`;
             const isSelected = getCurrentTier() === tier;
 
             return (
               <div
                 key={index}
-                onClick={() => onQuantitySelect?.(tier.quantity)}
+                onClick={() => onQuantitySelect?.(tier.min)}
                 className={`rounded-lg p-2 text-center border transition-all cursor-pointer ${
                   isSelected
                     ? 'bg-orange-50 border-orange-300 ring-2 ring-orange-200'
                     : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
                 }`}
               >
-                <div className="text-xs font-medium">{quantityLabel} unités</div>
+                <div className="text-xs font-medium">{rangeLabel} unités</div>
                 <div className={`font-semibold text-xs ${
                   isSelected ? 'text-orange-700' : 'text-orange-600'
                 }`}>
                   {tier.price.toFixed(0)} HTG
                 </div>
-                <div className={`text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
-                  isSelected 
-                    ? 'bg-orange-600' 
-                    : 'bg-gradient-to-r from-orange-500 to-red-500'
-                }`}>
-                  {tier.discount}% Off
-                </div>
+                {tier.discount > 0 && (
+                  <div className={`text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
+                    isSelected 
+                      ? 'bg-orange-600' 
+                      : 'bg-gradient-to-r from-orange-500 to-red-500'
+                  }`}>
+                    {tier.discount}% Off
+                  </div>
+                )}
               </div>
             );
           })}

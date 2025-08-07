@@ -1,7 +1,9 @@
+// SellerInfo.tsx
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Star, Check, Users, Store } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import VerificationBadge from "@/components/shared/VerificationBadge";
 
 interface SellerInfoProps {
   seller?: {
@@ -64,11 +66,7 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
           <h3 className="text-xs font-medium text-gray-900 truncate" style={{ maxWidth: '20ch' }}>
             {seller.name}
           </h3>
-          {seller.verified && (
-            <Badge variant="secondary" className="h-4 px-1">
-              <Check className="w-2.5 h-2.5" />
-            </Badge>
-          )}
+          {seller.verified && <VerificationBadge />}
         </div>
       </div>
     </div>

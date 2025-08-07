@@ -75,7 +75,7 @@ const ExpandableCard = () => {
       {/* Product Header: Name + Badge */}
       <div className="flex items-start justify-between gap-3">
         <h3 
-          className="text-gray-800 font-bold cursor-pointer hover:text-red-500 transition-colors duration-200 leading-tight text-sm truncate flex-1"
+          className="text-gray-800 font-bold cursor-pointer hover:text-red-500 transition-colors duration-200 leading-tight text-lg truncate flex-1"
           onClick={() => setIsTitleExpanded(!isTitleExpanded)}
         >
           {title}

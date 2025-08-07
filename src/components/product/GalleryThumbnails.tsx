@@ -10,7 +10,7 @@ interface GalleryThumbnailsProps {
   videoIndices?: number[];
 }
 
-const GalleryThumbnails = ({
+export const GalleryThumbnails = ({
   images,
   currentIndex,
   onThumbnailClick,

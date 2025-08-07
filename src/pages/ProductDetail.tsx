@@ -274,11 +274,12 @@ const ProductDetail = () => {
           </ProductSectionWrapper>
 
           {/* SellerInfo with no top/bottom padding and margin */}
-          <ProductSectionWrapper className="!py-0 !my-0 !mb-3">
+          <ProductSectionWrapper className="!py-0 !my-0 !mb-0">
             <SellerInfo seller={product?.sellers} />
           </ProductSectionWrapper>
 
-          <ProductSectionWrapper>
+          {/* ProductColorVariants with reduced top padding */}
+          <ProductSectionWrapper className="!pt-2 !mt-0">
             <ProductColorVariants />
           </ProductSectionWrapper>
 

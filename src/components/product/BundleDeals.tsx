@@ -51,11 +51,7 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
         <ProductSectionHeader
           title="Bundle Deals"
           icon={Package}
-          leftExtra={
-            <div className="bg-orange-100 text-orange-600 text-xs px-1.5 py-0.5 rounded-full font-medium">
-              Save up to {maxDiscount}%
-            </div>
-          }
+         
           rightContent={
             <div className="text-xs text-gray-500 flex items-center">
               <Clock size={12} className="mr-1" />

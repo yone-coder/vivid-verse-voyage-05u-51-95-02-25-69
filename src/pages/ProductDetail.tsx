@@ -295,9 +295,7 @@ const ProductDetail = () => {
             <ShippingOptionsComponent />
           </ProductSectionWrapper>
 
-          <ProductSectionWrapper>
-            <SellerInfo seller={product?.sellers} />
-          </ProductSectionWrapper>
+         
         </div>
       </div>
 

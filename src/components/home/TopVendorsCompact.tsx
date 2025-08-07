@@ -32,6 +32,72 @@ const getProductImageUrl = (imagePath) => {
   return data.publicUrl;
 };
 
+// Custom Seller Avatar SVG Component
+const DefaultSellerAvatar = ({ className = "w-6 h-6" }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    className={className}
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Shop/Store building outline */}
+    <path 
+      d="M3 21H21V9L18 6.5L15 4L12 6.5L9 4L6 6.5L3 9V21Z" 
+      fill="#E5E7EB" 
+      stroke="#9CA3AF" 
+      strokeWidth="1.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    {/* Store front */}
+    <path 
+      d="M6 21V12H10V21" 
+      fill="#F3F4F6" 
+      stroke="#9CA3AF" 
+      strokeWidth="1.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    <path 
+      d="M14 21V12H18V21" 
+      fill="#F3F4F6" 
+      stroke="#9CA3AF" 
+      strokeWidth="1.5" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+    {/* Awning/roof detail */}
+    <path 
+      d="M2 9H22" 
+      stroke="#9CA3AF" 
+      strokeWidth="1.5" 
+      strokeLinecap="round"
+    />
+    {/* Windows */}
+    <circle cx="8" cy="16.5" r="1" fill="#9CA3AF"/>
+    <circle cx="16" cy="16.5" r="1" fill="#9CA3AF"/>
+  </svg>
+);
+
+// Alternative User/Profile SVG Component
+const DefaultProfileAvatar = ({ className = "w-6 h-6" }) => (
+  <svg 
+    viewBox="0 0 24 24" 
+    className={className}
+    fill="none" 
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    {/* Circle background */}
+    <circle cx="12" cy="12" r="12" fill="#E5E7EB"/>
+    {/* Person silhouette */}
+    <circle cx="12" cy="8" r="3" fill="#9CA3AF"/>
+    <path 
+      d="M6.168 18.849C6.718 16.761 9.143 15.25 12 15.25s5.282 1.511 5.832 3.599" 
+      fill="#9CA3AF"
+    />
+  </svg>
+);
+
 // Verification SVG Component
 const VerificationBadge = () => (
   <svg width="16" height="16" viewBox="0 0 128 128" className="flex-shrink-0 ml-1">
@@ -53,7 +119,7 @@ const VendorCard = ({ vendor }) => {
   return (
     <div className="w-full">
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:border-gray-200 transition-all duration-300">
-        
+
         {/* Products Grid */}  
         <div className="px-2 pt-2 pb-1 relative">  
           {vendor.discount && (  
@@ -61,7 +127,7 @@ const VendorCard = ({ vendor }) => {
               {vendor.discount}  
             </div>  
           )}
-          
+
           <div className="grid grid-cols-4 gap-1">  
             {displayProducts.map(product => (  
               <button 
@@ -91,17 +157,17 @@ const VendorCard = ({ vendor }) => {
         {/* Vendor Info */}
         <div className="px-2 py-1 border-t border-gray-50">
           <div className="flex items-center gap-2">
-            
+
             {/* Vendor Avatar */}
-            <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gray-50 flex items-center justify-center">
+            <div className="w-10 h-10 flex-shrink-0 rounded-full bg-gray-50 border border-gray-100 flex items-center justify-center overflow-hidden">
               {vendor.image ? (
                 <img   
                   src={vendor.image}   
                   alt={vendor.name}   
-                  className="w-8 h-8 object-contain rounded-full"  
+                  className="w-full h-full object-cover rounded-full"  
                 />
               ) : (
-                <Store className="w-5 h-5 text-gray-400" />
+                <DefaultSellerAvatar className="w-6 h-6" />
               )}
             </div>
 

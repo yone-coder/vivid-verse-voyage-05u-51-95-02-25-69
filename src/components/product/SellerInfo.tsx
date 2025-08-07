@@ -1,7 +1,7 @@
 // SellerInfo.tsx
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, Users, Store } from "lucide-react";
+import { Star, Check, Users, Store, ChevronRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import VerificationBadge from "@/components/shared/VerificationBadge";
 
@@ -47,6 +47,15 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
   return (
     <div className="bg-white">
       <div className="flex items-center gap-2">
+        {/* Content - more compact */}
+        <div className="flex items-center gap-1">
+          <span className="text-xs text-gray-500">Sold by</span>
+          <h3 className="text-xs font-medium text-gray-900 truncate" style={{ maxWidth: '20ch' }}>
+            {seller.name}
+          </h3>
+          {seller.verified && <VerificationBadge />}
+        </div>
+
         {/* Avatar - made smaller */}
         <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
           {logoUrl ? (
@@ -60,14 +69,8 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
           )}
         </div>
 
-        {/* Content - more compact */}
-        <div className="flex items-center gap-1">
-          <span className="text-xs text-gray-500">Sold by</span>
-          <h3 className="text-xs font-medium text-gray-900 truncate" style={{ maxWidth: '20ch' }}>
-            {seller.name}
-          </h3>
-          {seller.verified && <VerificationBadge />}
-        </div>
+        {/* Chevron right icon */}
+        <ChevronRight className="w-4 h-4 text-gray-400" />
       </div>
     </div>
   );

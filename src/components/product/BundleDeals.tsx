@@ -3,14 +3,14 @@ import { Package, Clock } from 'lucide-react';
 import ProductSectionHeader from './ProductSectionHeader';
 import ToggleExpandButton from "@/components/product/ToggleExpandButton";
 
-// Price tiers configuration
+// Price tiers configuration with discount percentages
 const PRICE_TIERS = [
-  { min: 1, max: 2, price: 10.00, discount: 0 },
-  { min: 3, max: 5, price: 9.00, discount: 10 },
-  { min: 6, max: 9, price: 8.50, discount: 15 },
-  { min: 10, max: 49, price: 8.00, discount: 20 },
-  { min: 50, max: 99, price: 7.50, discount: 25 },
-  { min: 100, max: Infinity, price: 7.00, discount: 30 }
+  { min: 1, max: 2, discount: 0 },
+  { min: 3, max: 5, discount: 10 },
+  { min: 6, max: 9, discount: 15 },
+  { min: 10, max: 49, discount: 20 },
+  { min: 50, max: 99, discount: 25 },
+  { min: 100, max: Infinity, discount: 30 }
 ];
 
 interface BundleDealsProps {
@@ -18,15 +18,22 @@ interface BundleDealsProps {
   currentQuantity?: number;
   onQuantitySelect?: (quantity: number) => void;
   hideHeader?: boolean;
+  basePrice?: number;
 }
 
 const BundleDeals: React.FC<BundleDealsProps> = ({ 
   className = "",
   currentQuantity = 1,
   onQuantitySelect,
-  hideHeader = false
+  hideHeader = false,
+  basePrice = 62.99
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  // Calculate actual prices based on base price and discounts
+  const calculatePrice = (discount: number) => {
+    return basePrice * (1 - discount / 100);
+  };
 
   // Find which tier the current quantity falls into
   const getCurrentTier = () => {
@@ -77,7 +84,7 @@ const BundleDeals: React.FC<BundleDealsProps> = ({
                 <div className={`font-semibold text-xs ${
                   isSelected ? 'text-orange-700' : 'text-orange-600'
                 }`}>
-                  {tier.price.toFixed(0)} HTG
+                  {calculatePrice(tier.discount).toFixed(0)} HTG
                 </div>
                 <div className={`text-white text-xs rounded-full px-1.5 py-0.5 mt-1 font-medium ${
                   isSelected 

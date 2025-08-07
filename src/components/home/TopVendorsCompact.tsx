@@ -195,7 +195,7 @@ const VendorCard = ({ vendor }) => {
                     {vendor.followers}  
                   </div>
                 </div>
-                <span className="text-xs font-bold text-gray-400">#{vendor.rank}</span>
+                <span className="text-xs font-bold text-white bg-gray-400 px-1.5 py-0.5 rounded-full">#{vendor.rank}</span>
               </div>
             </div>
           </div>

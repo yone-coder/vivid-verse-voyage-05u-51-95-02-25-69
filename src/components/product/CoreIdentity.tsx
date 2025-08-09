@@ -5,9 +5,68 @@ import { useProduct } from '@/hooks/useProduct';
 
 const ExpandableCard = () => {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [currentCurrency, setCurrentCurrency] = useState('USD');
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 23,
+    minutes: 45,
+    seconds: 30
+  });
+  const [showDiscount, setShowDiscount] = useState(false);
+  
   const { id: paramId } = useParams<{ id: string }>();
   const { data: product } = useProduct(paramId || '');
   const navigate = useNavigate();
+
+  const currencies = {
+    USD: 'USD',
+    HTG: 'HTG',
+    EUR: 'EUR'
+  };
+
+  const currencyFlags = {
+    USD: '🇺🇸',
+    HTG: '🇭🇹',
+    EUR: '🇪🇺'
+  };
+
+  // Timer effect
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        let { days, hours, minutes, seconds } = prev;
+        
+        if (seconds > 0) {
+          seconds--;
+        } else if (minutes > 0) {
+          minutes--;
+          seconds = 59;
+        } else if (hours > 0) {
+          hours--;
+          minutes = 59;
+          seconds = 59;
+        } else if (days > 0) {
+          days--;
+          hours = 23;
+          minutes = 59;
+          seconds = 59;
+        }
+        
+        return { days, hours, minutes, seconds };
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  // Toggle discount display effect
+  useEffect(() => {
+    const discountTimer = setInterval(() => {
+      setShowDiscount(prev => !prev);
+    }, 3000);
+
+    return () => clearInterval(discountTimer);
+  }, []);
 
   if (!product) return null;
 
@@ -21,6 +80,56 @@ const ExpandableCard = () => {
     return formatNumber(price * exchangeRate);
   };
 
+  const convertToEUR = (usdPrice) => {
+    const exchangeRate = 0.85;
+    const price = parseFloat(usdPrice) || 0;
+    return formatNumber(price * exchangeRate);
+  };
+
+  const convertPrice = (price) => {
+    const numPrice = parseFloat(price) || 0;
+    switch (currentCurrency) {
+      case 'HTG':
+        return convertToHTG(numPrice);
+      case 'EUR':
+        return convertToEUR(numPrice);
+      default:
+        return formatNumber(numPrice);
+    }
+  };
+
+  const toggleCurrency = () => {
+    const currencyOrder = ['USD', 'HTG', 'EUR'];
+    const currentIndex = currencyOrder.indexOf(currentCurrency);
+    const nextIndex = (currentIndex + 1) % currencyOrder.length;
+    setCurrentCurrency(currencyOrder[nextIndex]);
+  };
+
+  const getPaymentMethods = (currency) => {
+    const methods = {
+      USD: [
+        { name: 'PayPal', color: 'bg-blue-600' },
+        { name: 'Stripe', color: 'bg-purple-600' },
+        { name: 'Apple Pay', color: 'bg-gray-800' }
+      ],
+      HTG: [
+        { name: 'Moncash', color: 'bg-red-600' },
+        { name: 'Natcash', color: 'bg-green-600' },
+        { name: 'Bank Transfer', color: 'bg-blue-800' }
+      ],
+      EUR: [
+        { name: 'SEPA', color: 'bg-blue-700' },
+        { name: 'PayPal', color: 'bg-blue-600' },
+        { name: 'Klarna', color: 'bg-pink-600' }
+      ]
+    };
+    return methods[currency] || methods.USD;
+  };
+
+  const handleShowMore = () => {
+    navigate(`/product/${paramId}/description`);
+  };
+
   const title = product.name;
   const description = product.description;
 
@@ -32,16 +141,12 @@ const ExpandableCard = () => {
   const isVeryLongDescription = description && totalLines > 5;
   const needsShowMore = isExpandableDescription || isVeryLongDescription;
 
-  const handleShowMore = () => {
-    navigate(`/product/${paramId}/description`);
-  };
-
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
   };
 
   return (
-    <div className="bg-white w-full">
+    <div className="bg-white w-full p-4 border rounded-lg shadow-sm">
       {/* Product Header */}
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-gray-800 font-bold leading-tight text-lg truncate flex-1">
@@ -72,7 +177,7 @@ const ExpandableCard = () => {
 
       {/* Product Description */}
       {description && (
-        <div className="text-xs text-gray-700 leading-tight">
+        <div className="text-xs text-gray-700 leading-tight mt-3">
           <p className={`m-0 ${(!isDescriptionExpanded && needsShowMore) ? 'line-clamp-2' : ''}`}>
             {description}
           </p>

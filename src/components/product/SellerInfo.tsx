@@ -1,7 +1,7 @@
 // SellerInfo.tsx
 import React from "react";
 import { Badge } from "@/components/ui/badge";
-import { Star, Check, Users, Store, ChevronRight } from "lucide-react";
+import { Star, Check, Users, Store, ChevronRight, ShoppingBag } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import VerificationBadge from "@/components/shared/VerificationBadge";
 
@@ -15,9 +15,19 @@ interface SellerInfoProps {
     total_sales: number;
     followers_count: number;
   };
+  stock?: number;
+  reservedStock?: number;
+  lastBuyerAvatar?: string;
+  lastPurchase?: string;
 }
 
-const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
+const SellerInfo: React.FC<SellerInfoProps> = ({ 
+  seller, 
+  stock = 0, 
+  reservedStock = 0, 
+  lastBuyerAvatar, 
+  lastPurchase = "recently" 
+}) => {
   if (!seller) {
     return null;
   }
@@ -32,6 +42,10 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
     return num.toString();
   };
 
+  const formatSales = (num: number): string => {
+    return formatNumber(num);
+  };
+
   const getSellerLogoUrl = (imagePath?: string): string | null => {
     if (!imagePath) return null;
 
@@ -42,7 +56,19 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
     return data.publicUrl;
   };
 
+  const StockIndicator = ({ stock }: { stock: number }) => {
+    if (stock > 10) {
+      return <span className="text-green-600">In stock</span>;
+    } else if (stock > 0) {
+      return <span className="text-yellow-600">Low stock</span>;
+    } else {
+      return <span className="text-red-600">Out of stock</span>;
+    }
+  };
+
   const logoUrl = getSellerLogoUrl(seller.image_url);
+  const rating = seller.rating?.toFixed(1) || "0.0";
+  const totalSales = seller.total_sales;
 
   return (
     <div className="bg-white">
@@ -93,13 +119,15 @@ const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
         </div>
         
         <div className="flex items-center gap-1">
-          <div className="w-4 h-4 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
-            <img 
-              src={lastBuyerAvatar} 
-              alt="Last buyer"
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {lastBuyerAvatar && (
+            <div className="w-4 h-4 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
+              <img 
+                src={lastBuyerAvatar} 
+                alt="Last buyer"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
           <span className="text-gray-500">Last bought {lastPurchase}</span>
         </div>
       </div>

@@ -146,7 +146,7 @@ const ExpandableCard = () => {
   };
 
   return (
-    <div className="bg-white w-full p-4 border rounded-lg shadow-sm">
+    <div className="bg-white w-full">
       {/* Product Header */}
       <div className="flex items-start justify-between gap-3">
         <h3 className="text-gray-800 font-bold leading-tight text-lg truncate flex-1">

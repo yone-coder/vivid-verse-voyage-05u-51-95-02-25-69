@@ -1,9 +1,11 @@
 // SellerInfo.tsx
 import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { Star, Check, Users, Store, ChevronRight, ShoppingBag } from "lucide-react";
+import { Store, ShoppingBag, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import VerificationBadge from "@/components/shared/VerificationBadge";
+
+// Fallback image (import or define)
+const FALLBACK_AVATAR = "/images/default-avatar.png"; // Update with your fallback image path
 
 interface SellerInfoProps {
   seller?: {
@@ -17,7 +19,7 @@ interface SellerInfoProps {
   };
   stock?: number;
   reservedStock?: number;
-  lastBuyerAvatar?: string;
+  lastBuyerAvatar?: string | null;
   lastPurchase?: string;
 }
 
@@ -42,92 +44,96 @@ const SellerInfo: React.FC<SellerInfoProps> = ({
     return num.toString();
   };
 
-  const formatSales = (num: number): string => {
-    return formatNumber(num);
-  };
+  const formatSales = (num: number): string => formatNumber(num);
 
   const getSellerLogoUrl = (imagePath?: string): string | null => {
     if (!imagePath) return null;
-
-    const { data } = supabase.storage
-      .from('seller-logos')
-      .getPublicUrl(imagePath);
-
+    const { data } = supabase.storage.from('seller-logos').getPublicUrl(imagePath);
     return data.publicUrl;
   };
 
   const StockIndicator = ({ stock }: { stock: number }) => {
-    if (stock > 10) {
-      return <span className="text-green-600">In stock</span>;
-    } else if (stock > 0) {
-      return <span className="text-yellow-600">Low stock</span>;
-    } else {
-      return <span className="text-red-600">Out of stock</span>;
-    }
+    if (stock > 10) return <span className="text-green-600">In stock</span>;
+    if (stock > 0) return <span className="text-yellow-600">Low stock</span>;
+    return <span className="text-red-600">Out of stock</span>;
   };
 
   const logoUrl = getSellerLogoUrl(seller.image_url);
   const rating = seller.rating?.toFixed(1) || "0.0";
   const totalSales = seller.total_sales;
+  const availableStock = Math.max(0, stock - reservedStock);
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+    const target = e.target as HTMLImageElement;
+    target.src = FALLBACK_AVATAR;
+    target.onerror = null; // Prevent infinite loop if fallback also fails
+  };
 
   return (
-    <div className="bg-white">
+    <div className="bg-white p-2 rounded-lg border border-gray-100">
+      {/* Seller Info Row */}
       <div className="flex items-center justify-between mb-2">
-        {/* Content - more compact */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">Sold by</span>
           
-          {/* Avatar moved before name */}
-          <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+          {/* Seller Avatar with Fallback */}
+          <div className="w-6 h-6 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
             {logoUrl ? (
               <img 
-                src={logoUrl} 
+                src={logoUrl}
+                alt={seller.name}
+                className="w-full h-full object-cover"
+                onError={handleImageError}
+              />
+            ) : (
+              <img
+                src={FALLBACK_AVATAR}
                 alt={seller.name}
                 className="w-full h-full object-cover"
               />
-            ) : (
-              <Store className="w-3 h-3 text-gray-400" />
             )}
           </div>
           
-          <h3 className="text-xs font-medium text-gray-900 truncate">
-            {seller.name}
-          </h3>
-          {seller.verified && <VerificationBadge />}
-          
+          <div className="flex items-center gap-1">
+            <h3 className="text-xs font-medium text-gray-900 truncate max-w-[100px]">
+              {seller.name}
+            </h3>
+            {seller.verified && <VerificationBadge size="xs" />}
+          </div>
+
           {/* Rating */}
-          <div className="flex items-center gap-0.5 ml-1">
+          <div className="flex items-center gap-1 ml-1">
             <span className="text-gray-300">|</span>
             <span className="text-yellow-500 text-xs">★</span>
             <span className="text-xs text-gray-700">{rating}</span>
           </div>
         </div>
 
-        {/* Sales count pushed to far right */}
+        {/* Sales Count */}
         <div className="flex items-center gap-1">
           <ShoppingBag className="w-3 h-3 text-gray-400" />
           <span className="text-xs text-gray-500">({formatSales(totalSales)})</span>
         </div>
       </div>
 
-      {/* Stock-focused info - minimal */}
+      {/* Stock Info Row */}
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center">
           <StockIndicator stock={stock} />
-          <span className="text-gray-300 ml-1">|</span>
-          <span className="text-gray-600 ml-1">{stock - reservedStock} available</span>
+          <span className="text-gray-300 mx-1">|</span>
+          <span className="text-gray-600">{availableStock} available</span>
         </div>
         
         <div className="flex items-center gap-1">
-          {lastBuyerAvatar && (
-            <div className="w-4 h-4 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
-              <img 
-                src={lastBuyerAvatar} 
-                alt="Last buyer"
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+          {/* Buyer Avatar with Fallback */}
+          <div className="w-4 h-4 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
+            <img 
+              src={lastBuyerAvatar || FALLBACK_AVATAR}
+              alt="Last buyer"
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+            />
+          </div>
           <span className="text-gray-500">Last bought {lastPurchase}</span>
         </div>
       </div>

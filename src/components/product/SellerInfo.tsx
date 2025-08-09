@@ -1,11 +1,14 @@
 // SellerInfo.tsx
-import React from "react";
-import { Store, ShoppingBag, Users } from "lucide-react";
+import React, { useState } from "react";
+import { Store, ShoppingBag, Users, Bell, BellOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import VerificationBadge from "@/components/shared/VerificationBadge";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
-// Fallback image (import or define)
-const FALLBACK_AVATAR = "/images/default-avatar.png"; // Update with your fallback image path
+// Free open-source placeholder image URLs
+const FALLBACK_SELLER_LOGO = "https://picsum.photos/100/100?random=1";
+const FALLBACK_BUYER_AVATAR = "https://i.pravatar.cc/100?img=3";
 
 interface SellerInfoProps {
   seller?: {
@@ -21,6 +24,7 @@ interface SellerInfoProps {
   reservedStock?: number;
   lastBuyerAvatar?: string | null;
   lastPurchase?: string;
+  productId?: string;
 }
 
 const SellerInfo: React.FC<SellerInfoProps> = ({ 
@@ -28,19 +32,38 @@ const SellerInfo: React.FC<SellerInfoProps> = ({
   stock = 0, 
   reservedStock = 0, 
   lastBuyerAvatar, 
-  lastPurchase = "recently" 
+  lastPurchase = "recently",
+  productId
 }) => {
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   if (!seller) {
     return null;
   }
 
+  const handleStockNotification = async () => {
+    setIsLoading(true);
+    try {
+      // Simulate API call to subscribe to stock notifications
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      setIsSubscribed(!isSubscribed);
+      toast.success(
+        isSubscribed 
+          ? "You'll no longer receive stock notifications" 
+          : "You'll be notified when stock is available!"
+      );
+    } catch (error) {
+      toast.error("Failed to update notification preference");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const formatNumber = (num: number): string => {
-    if (num >= 1000000) {
-      return `${(num / 1000000).toFixed(1)}M`;
-    }
-    if (num >= 1000) {
-      return `${(num / 1000).toFixed(1)}K`;
-    }
+    if (num >= 1000000) return `${(num / 1000000).toFixed(1)}M`;
+    if (num >= 1000) return `${(num / 1000).toFixed(1)}K`;
     return num.toString();
   };
 
@@ -65,33 +88,29 @@ const SellerInfo: React.FC<SellerInfoProps> = ({
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const target = e.target as HTMLImageElement;
-    target.src = FALLBACK_AVATAR;
-    target.onerror = null; // Prevent infinite loop if fallback also fails
+    if (target.alt.includes("seller")) {
+      target.src = FALLBACK_SELLER_LOGO;
+    } else {
+      target.src = FALLBACK_BUYER_AVATAR;
+    }
+    target.onerror = null;
   };
 
   return (
-    <div className="bg-white p-2 rounded-lg border border-gray-100">
+    <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm">
       {/* Seller Info Row */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <span className="text-xs text-gray-500">Sold by</span>
           
-          {/* Seller Avatar with Fallback */}
+          {/* Seller Avatar */}
           <div className="w-6 h-6 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
-            {logoUrl ? (
-              <img 
-                src={logoUrl}
-                alt={seller.name}
-                className="w-full h-full object-cover"
-                onError={handleImageError}
-              />
-            ) : (
-              <img
-                src={FALLBACK_AVATAR}
-                alt={seller.name}
-                className="w-full h-full object-cover"
-              />
-            )}
+            <img 
+              src={logoUrl || FALLBACK_SELLER_LOGO}
+              alt={`${seller.name} seller`}
+              className="w-full h-full object-cover"
+              onError={handleImageError}
+            />
           </div>
           
           <div className="flex items-center gap-1">
@@ -118,17 +137,34 @@ const SellerInfo: React.FC<SellerInfoProps> = ({
 
       {/* Stock Info Row */}
       <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center">
+        <div className="flex items-center gap-1">
           <StockIndicator stock={stock} />
           <span className="text-gray-300 mx-1">|</span>
           <span className="text-gray-600">{availableStock} available</span>
+          
+          {/* Stock Notification Bell */}
+          {stock <= 0 && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="w-4 h-4 ml-1 text-gray-400 hover:text-primary"
+              onClick={handleStockNotification}
+              disabled={isLoading}
+            >
+              {isSubscribed ? (
+                <BellOff className="w-3 h-3" />
+              ) : (
+                <Bell className="w-3 h-3" />
+              )}
+            </Button>
+          )}
         </div>
         
         <div className="flex items-center gap-1">
-          {/* Buyer Avatar with Fallback */}
+          {/* Buyer Avatar */}
           <div className="w-4 h-4 rounded-full bg-gray-100 overflow-hidden flex-shrink-0">
             <img 
-              src={lastBuyerAvatar || FALLBACK_AVATAR}
+              src={lastBuyerAvatar || FALLBACK_BUYER_AVATAR}
               alt="Last buyer"
               className="w-full h-full object-cover"
               onError={handleImageError}
